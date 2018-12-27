@@ -1,0 +1,32 @@
+
+<ng-container *ngTemplateOutlet="itemTemplate || defaultTemplate; context: packageContext"></ng-container>
+
+<ng-template #defaultTemplate let-checkboxInfo="checkboxInfo" let-showcheckbox="showcheckbox">
+    <div class="border-bottom border-dark" *ngIf = packageObs | async as package>
+        <div class="col" *ngIf="showcheckbox">
+            <input type="checkbox" class="list__checkbox" [ngModel]="checkboxValue" (ngModelChange)="changeVal($event)">
+        </div>
+        <div class="row">
+            <div class="col">{{ package.id }}</div>
+            <div class="col" [style.color]="package.status == 'New' ? 'black' : 'green'">{{ package.status }}</div>
+            <div class="col">{{ package.streetAddress }}</div>
+            <div class="col">{{ package.streetNumber }}</div>
+            <div class="col">{{ package.postalCode }}</div>
+            <div class="col">{{ package.location }}</div>
+            <div class="col">{{ package.country }}</div>
+            <div class="col">{{ package.phoneNumber | phoneFormat}}</div>
+            <div class="col">{{ package.initialTransportDate | date: 'dd/MM/yyyy' }}</div>
+            <div class="col-3">{{ package.description }}</div>
+            <div class="col-2" [appCollapse]="checkboxInfo" #cal="app-collapse">
+                <div *ngFor="let item of package.items">{{ item.name }}/ {{ item.unit }}/ {{ item.quantity }}</div>
+            </div>
+        </div>
+        <div class="row">
+            <a [routerLink]="['/api/package', package.id]" class="btn btn-primary form__link">Edit</a>
+            <button class="btn btn-primary" (click)="cal.toggle()">Toggle package info</button>
+        </div>
+    </div>
+</ng-template>
+
+
+

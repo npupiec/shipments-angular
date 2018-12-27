@@ -1,0 +1,127 @@
+<section class="packages" *ngIf="packageList">
+  <div class="container-fluid">
+      <div class="list__options">
+        <div class="list__checkbox">
+            <input type="checkbox" class="list__checkbox" [ngModel]="enableSelect" (ngModelChange)="onEnableSelectionChange($event)">Select packages
+        </div>
+        <div class="list__checkbox">
+            <input type="checkbox" class="list__checkbox" [ngModel]="toggleInfo" (ngModelChange)="onToggleInfo($event); call.toggle()"> Toogle package info
+        </div>
+        <div class="btn-group btn-group-toggle list__checkbox">
+              <input type="radio" name="options" [value]="true" [ngModel]="selectList" (ngModelChange)="onSelectList($event)"> List view
+              <input type="radio" name="options" [value]="false" [ngModel]="selectList" (ngModelChange)="onSelectList($event)"> Card view
+        </div>
+        <div class="list__checkbox">
+            <input type="checkbox" [ngModel]="selectSearch" (ngModelChange)="onSelectSearch($event)" class="btn list__btn">Search packages
+        </div>
+      </div>
+    <div class="list__select" [appCollapse]="enableSelect">
+        <button class="btn btn-danger" (click)="removePackages()">Remove selected packages</button>
+        <div class="btn-group status__list">
+            <select [ngModel]="statusList" (ngModelChange)="setPackageState($event)">
+                <option value="" [ngValue]="'New'">--Please choose status--</option>
+                <option [ngValue]="'New'">New</option>
+                <option [ngValue]="'Accept'">Accept</option>
+            </select>
+        </div>
+    </div>
+    <div class="list__boolean" *ngIf="selectSearch">
+        <div class="btn-group list__boolean-address">
+            <input placeholder="Filter" [ngModel]="search" (ngModelChange)="onSearch($event)">
+        </div>
+        <div class="btn-group list__boolean-date">
+            <label for="">Filter by transport date</label>
+            <input type="date" [ngModel]="searchDate" (ngModelChange)="onSearchDate($event)">
+        </div>
+    </div>
+    
+      <div class="row list-group-item-primary" [appCollapse]="selectList">
+          <div class="col">ID</div>
+          <div class="col">Status</div>
+          <div class="col">Street</div>
+          <div class="col">Number</div>
+          <div class="col">Postal code</div>
+          <div class="col">City</div>
+          <div class="col">Country</div>
+          <div class="col">Phone number</div>
+          <div class="col">Transport date</div>
+          <div class="col-3">Description</div>
+          <div class="col-2" [appCollapse]="false" #call="app-collapse">
+            <div>Type/Unit/Quantity</div>
+          </div>
+      </div>
+      <div>
+          <app-package-item *ngFor="let package of pagedItems" [package]="package" [itemTemplate]="selectList ? itemTemplate : cardTemplate"></app-package-item>
+          <ng-template #itemTemplate let-package let-showcheckbox="showcheckbox" let-checkboxValue="checkboxValue" 
+            let-changeVal="changeVal" let-checkboxInfo="checkboxInfo">
+              <div class="border-bottom border-dark"  [class.selected]="selectedId === package.id">
+                  <div class="col" *ngIf="showcheckbox">
+                      <input type="checkbox" class="list__checkbox" [ngModel]="checkboxValue" (ngModelChange)="changeVal($event)">
+                  </div>
+                  <div class="row" [@packageState]="statusList">
+                      <div class="col">{{ package.id }}</div>
+                      <div class="col" [style.color]="package.status == 'New' ? 'black' : 'green'">{{ package.status }}</div>
+                      <div class="col">{{ package.streetAddress }}</div>
+                      <div class="col">{{ package.streetNumber }}</div>
+                      <div class="col">{{ package.postalCode }}</div>
+                      <div class="col">{{ package.location }}</div>
+                      <div class="col">{{ package.country }}</div>
+                      <div class="col">{{ package.phoneNumber | phoneFormat}}</div>
+                      <div class="col">{{ package.initialTransportDate | date: 'dd/MM/yyyy' }}</div>
+                      <div class="col-3">{{ package.description }}</div>
+                      <div class="col-2" [appCollapse]="checkboxInfo" #cal="app-collapse">
+                        <div *ngFor="let item of package.items">{{ item.name }}/ {{ item.unit }}/ {{ item.quantity }}</div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="btn-group">
+                            <a [routerLink]="['/packages/package', package.id]" class="btn btn-primary form__link">Edit</a>
+                            <button class="btn " (click)="cal.toggle()">Toggle package info</button>
+                      </div>
+                  </div>
+              </div>
+          </ng-template>
+          <ng-template #cardTemplate let-package let-showcheckbox="showcheckbox" let-checkboxValue="checkboxValue" 
+          let-changeVal="changeVal" let-checkboxInfo="checkboxInfo">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="col" *ngIf="showcheckbox">
+                                <input type="checkbox" class="list__checkbox" [ngModel]="checkboxValue" (ngModelChange)="changeVal($event)">
+                            </div>
+                          <h5 class="card-title">ID</h5>
+                          <div>{{ package.id }}</div>
+                          <h5 class="card-title">Status</h5>
+                          <div class="col" [style.color]="package.status == 'New' ? 'black' : 'green'">{{ package.status }}</div>
+                          <h5 class="card-title">Street</h5>
+                          <div>{{ package.streetAddress }}</div>
+                          <h5 class="card-title">Street Number</h5>
+                          <div>{{ package.streetNumber }}</div>
+                          <h5 class="card-title">Postal Code</h5>
+                          <div>{{ package.postalCode }}</div>
+                          <h5 class="card-title">City</h5>
+                          <div>{{ package.location }}</div>
+                          <h5 class="card-title">Country</h5>
+                          <div>{{ package.country }}</div>
+                          <h5 class="card-title">Phone number</h5>
+                          <div>{{ package.phoneNumber | phoneFormat}}</div>
+                          <h5 class="card-title">Transport date</h5>
+                          <div>{{ package.initialTransportDate | date: 'dd/MM/yyyy' }}</div>
+                          <h5 class="card-title">Description</h5>
+                          <div>{{ package.description }}</div>
+                          <div  [appCollapse]="checkboxInfo" #cal="app-collapse">
+                            <h5 class="card-title">Type/Unit/Quantity</h5>
+                            <div *ngFor="let item of package.items">{{ item.name }}/ {{ item.unit }}/ {{ item.quantity }}</div>
+                          </div>
+                          <a [routerLink]="['/api/package', package.id]" class="btn btn-primary form__link">Edit</a>
+                        <button class="btn btn-primary" (click)="cal.toggle()">Toggle package info</button>
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </ng-template>
+      </div>
+    </div>
+    <app-pagination (onPageChanged)= "pageChanged($event)" [packgesList] ="filteredData" [defaultPageSize]=10 ></app-pagination>
+</section>

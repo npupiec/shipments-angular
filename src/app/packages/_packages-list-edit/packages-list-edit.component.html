@@ -1,0 +1,57 @@
+<div class="col-8 edit__form" *ngIf="packageItem">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+          <label>Street:</label>
+          <input type="text" class="form-control form__input form__address" [(ngModel)]="packageItem.streetAddress">
+        </div>
+        <div class="form-group col-md-6">
+          <label>Number:</label>
+          <input type="text" class="form-control form__input form__nr" [(ngModel)]="packageItem.streetNumber">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label>Postal code</label>
+          <input type="text" class="form-control form__input form__code" [(ngModel)]="packageItem.postalCode">
+        </div>
+        <div class="form-group col-md-6">
+            <label>City</label>
+            <input type="text" class="form-control form__input form__city" [(ngModel)]="packageItem.location">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Country:</label>
+        <input type="text" class="form-control form__input form__country" [(ngModel)]="packageItem.country">
+      </div>
+      <div class="form-group">
+          <label>Phone number:</label>
+          <input type="text" class="form-control form__input form__phone" [(ngModel)]="packageItem.phoneNumber">
+      </div>
+      <div class="form-group">
+          <label>Transport date:</label>
+          <input type="date" class="form-control form__input form__date" [ngModel]="packageItem.initialTransportDate | date:'yyyy-MM-dd'" 
+            (ngModelChange)="changeDate($event)">
+      </div>
+      <div class="form-group">
+          <label>Description:</label>
+        <textarea type="text" class="form-control form__input form__desc" rows= '4' [(ngModel)]="packageItem.description"></textarea>
+      </div>
+      <div class="form__product" *ngFor="let pac of packageItem.items">
+          <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="">Type:</label>
+                <input type="text" class="form-control form__input form__type" [(ngModel)]="pac.name">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="">Unit</label>
+              <input type="text" class="form-control form__input form__unit" [(ngModel)]="pac.unit">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="">Quantity:</label>
+              <input type="number" class="form-control form__input form__quant" [(ngModel)]="pac.quantity">
+            </div>
+          </div>
+        </div>
+      <button type="button" class="btn btn-primary" (click)="upatePackage(packageItem)">Save</button>
+      <button class="btn btn-default" (click)="backToPackagesList($event)">Back to packages list</button>
+</div>
