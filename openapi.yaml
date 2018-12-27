@@ -1,0 +1,276 @@
+---
+openapi: 3.0.1
+info:
+  title: Shipment Managment App
+  description: |
+    an application that allows you to create, plan and manage shipments
+  version: '1.0'
+paths:
+  /package:
+    post:
+      summary: Creates a package.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Package'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+  /package/{id}:
+    get:
+      summary: Retrives a single package by id.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the package to retrieve.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+    put:
+      summary: Updates a package.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the package to update.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Package'
+      responses:
+        '200':
+          description: Update successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+    delete:
+      summary: Deletes a package.
+      parameters:
+        - name: id
+          in: path
+          description: Id of the package to delete.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Delete successful
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+  /packages:
+    get:
+      summary: Gets filtered list of packages.
+      parameters:
+        - name: limit
+          in: query
+          description: Max. number of items to return for a particular query.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: Number of items to skip counting from the beginning.
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Package'
+                    description: List of filtered items.
+                  total:
+                    type: integer
+                    format: int32
+                    description: Total number of items.
+                  filtered:
+                    type: integer
+                    format: int32
+                    description: Number of filtered items for particular query.
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+  /packages/delete:
+    post:
+      summary: Deletes multiple packages.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                format: int32
+                example: 654
+              description: List of id of packages to delete.
+      responses:
+        '204':
+          description: Delete successful
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+components:
+  schemas:
+    Address:
+      type: object
+      required:
+        - location
+        - streetAddress
+        - streetNumber
+        - postalCode
+        - country
+      properties:
+        location:
+          type: string
+          maxLength: 50
+          example: Kraków
+        streetAddress:
+          type: string
+          maxLength: 100
+          example: Aleja Pokoju
+        streetNumber:
+          type: string
+          maxLength: 20
+          example: 23/13 pok. 10
+        postalCode:
+          type: string
+          maxLength: 20
+          example: 31-548
+        country:
+          type: string
+          maxLength: 50
+          example: Polska
+    Package:
+      allOf:
+        - $ref: '#/components/schemas/Address'
+        - type: object
+          required:
+            - initialTransportDate
+          properties:
+            id:
+              type: integer
+              format: int32
+              example: 654
+            trackingNumber:
+              type: string
+              maxLength: 60
+              example: 37c167f3-da89-8836-f015-2c1781e5fbba
+            initialTransportDate:
+              type: string
+              format: date
+              example: '2018-08-02'
+              description: >
+                Data nie może być przeszła w momencie rejestracji
+            phoneNumbers:
+              type: array
+              items:
+                type: string
+                maxLength: 20
+                example: 600 000 000
+            description:
+              type: string
+              maxLength: 255
+              example: |
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                 Maecenas id imperdiet neque. Integer bibendum sem a luctus
+                 scelerisque. Aenean molestie sapien venenatis pellentesque
+                 pharetra.
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Item'
+              minItems: 1
+    Item:
+      type: object
+      required:
+        - name
+        - unit
+        - quantity
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 654
+        name:
+          type: string
+          maxLength: 50
+          example: Owoce
+        unit:
+          type: string
+          maxLength: 20
+          example: kg
+        quantity:
+          type: number
+          format: double
+          minimum: 0
+          exclusiveMinimum: true
+          example: 158.5
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+  responses:
+    400BadRequest:
+      description: The server could not understand the request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    404NotFound:
+      description: The requested resource is not available.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    GenericError:
+      description: An error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

@@ -1,0 +1,18 @@
+<section class="pagination">
+    <nav aria-label="...">
+        <ul class="pagination">
+          <li class="page-item" [ngClass]="{disabled : pager.currentPage === 1}">
+            <a class="page-link" (click)="setPage(pager.currentPage -1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor = "let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+            <a class="page-link" (click)="setPage(page)">{{page}}</a>
+          </li>
+          <li class="page-item" [ngClass]="{disabled:pager.currentPage === pager.allPages}">
+            <a class="page-link" (click)="setPage(pager.currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
+      <select [(ngModel)]="pageSize" (ngModelChange)="pageVal($event)">
+        <option *ngFor="let item of itemsPageLength" [ngValue]="item">{{item}}</option>
+      </select>
+</section>

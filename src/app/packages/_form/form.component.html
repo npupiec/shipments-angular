@@ -1,0 +1,128 @@
+<section class="form__prod">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <form action="" class="form__container" novalidate [formGroup]="dataForm" (ngSubmit)="addData($event)">
+              <div class="form__info">
+                  <div class="form-row">
+                      <div class="form-group col-md-6">
+                          <label for="streetAddress">Street:</label>
+                          <input formControlName="streetAddress" type="text" class="form-control form__input form__address" placeholder="Mainstreet">
+                          <div *ngIf="dataForm.controls.streetAddress.invalid && 
+                            (dataForm.controls.streetAddress.dirty || dataForm.controls.streetAddress.touched)" class="alert alert-danger">
+                            <p *ngIf="dataForm.controls.streetAddress.errors.required">{{ formErrors.required }}</p>
+                            <p *ngIf="dataForm.controls.streetAddress.errors.maxlength">{{ formErrors.toLong100 }}</p>
+                          </div>
+                      </div>
+                      <div class="form-group col-md-6">
+                          <label for="streetNumber">Number:</label>
+                          <input formControlName="streetNumber" type="text" class="form-control form__input form__nr" placeholder="32/10">
+                          <div *ngIf="dataForm.controls.streetNumber.invalid && 
+                            (dataForm.controls.streetNumber.dirty || dataForm.controls.streetNumber.touched)" class="alert alert-danger">
+                            <p *ngIf="dataForm.controls.streetNumber.errors.required">{{ formErrors.required }}</p>
+                            <p *ngIf="dataForm.controls.streetNumber.errors.maxlength">{{ formErrors.toLong20 }}</p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="">Postal code</label>
+                        <input formControlName="postalCode" type="text" class="form-control form__input form__code" placeholder="62-064">
+                        <div *ngIf="dataForm.controls.postalCode.invalid && 
+                        (dataForm.controls.postalCode.dirty || dataForm.controls.postalCode.touched)" class="alert alert-danger">
+                        <p *ngIf="dataForm.controls.postalCode.errors.required">{{ formErrors.required }}</p>
+                        <p *ngIf="dataForm.controls.postalCode.errors.maxlength">{{ formErrors.toLong20 }}</p>
+                        <p *ngIf="dataForm.controls.postalCode.errors.pattern">{{ formErrors.wrong }}</p>
+                    </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="">City</label>
+                      <input formControlName="location" type="text" class="form-control form__input form__city" placeholder="Poznan">
+                        <div *ngIf="dataForm.controls.location.invalid && 
+                          (dataForm.controls.location.dirty || dataForm.controls.location.touched)" class="alert alert-danger">
+                          <p *ngIf="dataForm.controls.location.errors.required">{{ formErrors.required }}</p>
+                          <p *ngIf="dataForm.controls.location.errors.maxlength">{{ formErrors.toLong50 }}</p>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="">Country:</label>
+                      <input formControlName="country" type="text" class="form-control form__input form__country" placeholder="Poland">
+                      <div *ngIf="dataForm.controls.country.invalid && 
+                        (dataForm.controls.country.dirty || dataForm.controls.country.touched)" class="alert alert-danger">
+                        <p *ngIf="dataForm.controls.country.errors.required">{{ formErrors.required }}</p>
+                        <p *ngIf="dataForm.controls.country.errors.maxlength">{{ formErrors.toLong50 }}</p>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="">Phone number:</label>
+                      <input formControlName="phoneNumber" type="text" class="form-control form__input form__phone" placeholder="600 600 600">
+                      <div *ngIf="dataForm.controls.phoneNumber.invalid && 
+                        (dataForm.controls.phoneNumber.dirty || dataForm.controls.phoneNumber.touched)" class="alert alert-danger">
+                        <p *ngIf="dataForm.controls.phoneNumber.errors.required">{{ formErrors.required }}</p>
+                        <p *ngIf="dataForm.controls.phoneNumber.errors.maxlength">{{ formErrors.toLong20 }}</p>
+                        <p *ngIf="dataForm.controls.phoneNumber.errors.pattern">{{ formErrors.wrong }}</p>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="">Transport date:</label>
+                    <input formControlName="initialTransportDate" type="date" class="form-control form__input form__date">
+                    <div *ngIf="dataForm.controls.initialTransportDate.invalid && 
+                      (dataForm.controls.initialTransportDate.dirty || dataForm.controls.initialTransportDate.touched)" class="alert alert-danger">
+                      <p *ngIf="dataForm.controls.initialTransportDate.errors.required">{{ formErrors.required }}</p>
+                      <p *ngIf="dataForm.controls.initialTransportDate.errors.dateValidation">{{ formErrors.date }}</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <textarea formControlName="description" type="text" class="form-control form__input form__desc" placeholder="Description"></textarea>
+                    <div *ngIf="dataForm.controls.description.invalid && 
+                      (dataForm.controls.description.dirty || dataForm.controls.description.touched)" class="alert alert-danger">
+                      <p *ngIf="dataForm.controls.description.errors.required">{{ formErrors.required }}</p>
+                      <p *ngIf="dataForm.controls.description.errors.maxlength">{{ formErrors.toLong255 }}</p>
+                    </div>
+                  </div>
+              </div>
+              
+              <div class="form__product" formArrayName="packages" *ngFor="let pac of packages.controls; let i = index">
+                <div class="form-row">
+                  <div class="form-group col-md-4" [formGroupName]="i">
+                      <label for="">Type:</label>
+                      <input formControlName="name" type="text" class="form-control form__input form__type" placeholder="Fruits">
+                      <div *ngIf="pac.controls.name.invalid && 
+                        (pac.controls.name.dirty || pac.controls.name.touched)" class="alert alert-danger">
+                        <p *ngIf="pac.controls.name.errors.required">{{ formErrors.required }}</p>
+                        <p *ngIf="pac.controls.name.errors.maxlength">{{ formErrors.toLong50 }}</p>
+                      </div>
+                  </div>
+                  <div class="form-group col-md-4" [formGroupName]="i">
+                    <label for="">Unit</label>
+                    <input formControlName="unit" type="text" class="form-control form__input form__unit" placeholder="kg">
+                    <div *ngIf="pac.controls.unit.invalid && 
+                      (pac.controls.unit.dirty || pac.controls.unit.touched)" class="alert alert-danger">
+                      <p *ngIf="pac.controls.unit.errors.required">{{ formErrors.required }}</p>
+                      <p *ngIf="pac.controls.unit.errors.maxlength">{{ formErrors.toLong20 }}</p>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-4" [formGroupName]="i">
+                    <label for="">Quantity:</label>
+                    <input formControlName="quantity" type="number" class="form-control form__input form__quant" placeholder="1">
+                    <div *ngIf="pac.controls.quantity.invalid && 
+                      (pac.controls.quantity.dirty || pac.controls.quantity.touched)" class="alert alert-danger">
+                      <p *ngIf="pac.controls.quantity.errors.required">{{ formErrors.required }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button type="button" class="btn btn-danger" (click) = "removePac(i)">Remove</button>
+                  <button type="button" class="btn btn-primary">Edit</button>
+                </div>
+              </div>
+            <button type="button" class="btn btn-success" (click)="addPac()">Add package</button>
+            <button class="btn btn-default btn-block form__btn" type="submit" (click)="createPackage($event)">Save</button>
+          </form>
+          <br>
+          <div *ngIf='success' class="alert alert-success" role="alert">{{ success }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
